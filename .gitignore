@@ -1,0 +1,7 @@
+.venv
+.idea
+Products/migrations
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
