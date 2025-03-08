@@ -29,9 +29,10 @@ class BrandPostgresqlRepository(BrandRepository):
         return brandList
 
     def partial_update(self, brand_id: int, data_update) -> Brand:
-            brandModel = BrandModel.objects.get(id=brand_id)
-            if "name" in data_update:
-                brandModel.name = data_update["name"]
-                brandModel.save()
+            brand_model = BrandModel.objects.get(id=brand_id)
+            if "name" or "country" in data_update:
+                brand_model.name = data_update["name"]
+                brand_model.countryOrigin = data_update["countryOrigin"]
+                brand_model.save()
 
-            return Brand(brandModel.name, brandModel.countryOrigin,brandModel.id)
+            return Brand(brand_model.name, brand_model.countryOrigin,brand_model.id)
