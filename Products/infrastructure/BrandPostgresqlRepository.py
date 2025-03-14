@@ -1,6 +1,7 @@
 from Products.domain.Brand import Brand
 from Products.domain.BrandRepository import BrandRepository
 from Products.infrastructure.models import BrandModel
+from django.core.exceptions import ObjectDoesNotExist
 
 class BrandPostgresqlRepository(BrandRepository):
 
@@ -21,7 +22,7 @@ class BrandPostgresqlRepository(BrandRepository):
         pass
 
     def get_all_brands(self)-> list[Brand]:
-        brandsModel = BrandModel.objects.all()
+        brandsModel = BrandModel.objects.all().order_by("id")
         brandList = []
         for bran in brandsModel:
             branDomain = Brand(bran.name, bran.countryOrigin, bran.id)
@@ -29,10 +30,22 @@ class BrandPostgresqlRepository(BrandRepository):
         return brandList
 
     def partial_update(self, brand_id: int, data_update) -> Brand:
-            brand_model = BrandModel.objects.get(id=brand_id)
-            if "name" or "country" in data_update:
-                brand_model.name = data_update["name"]
-                brand_model.countryOrigin = data_update["countryOrigin"]
-                brand_model.save()
+            try:
+                brand_model = BrandModel.objects.get(id=brand_id)
+                if "name" in data_update:
+                    brand_model.name = data_update["name"]
+                    brand_model.save()
+                if  "countryOrigin" in data_update:
+                    brand_model.countryOrigin = data_update["countryOrigin"]
+                    brand_model.save()
 
-            return Brand(brand_model.name, brand_model.countryOrigin,brand_model.id)
+                return Brand(brand_model.name, brand_model.countryOrigin,brand_model.id)
+            except BrandModel.DoesNotExist:
+                return None
+
+    def find_brand_by_name(self, name) -> Brand:
+        brand_model = BrandModel.objects.filter(name__iexact=name).first()
+        if not brand_model:
+            return None
+        return Brand(brand_model.name, brand_model.countryOrigin, brand_model.id)
+

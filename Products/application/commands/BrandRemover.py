@@ -1,5 +1,4 @@
 from Products.domain.BrandRepository  import BrandRepository
-from Products.domain.Brand import Brand
 class BrandRemover:
     def __init__(self,brandRepository: BrandRepository):
         self.brandRepository = brandRepository

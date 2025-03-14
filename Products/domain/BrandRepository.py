@@ -19,5 +19,9 @@ class BrandRepository(ABC):
         pass
 
     @abstractmethod
-    def partial_update(self, brand_id: int, data_update):
+    def partial_update(self, brand_id: int, data_update) -> Brand:
+        pass
+
+    @abstractmethod
+    def find_brand_by_name(self, brand_name: str)-> Brand:
         pass

@@ -28,3 +28,5 @@ class ProductRepository(ABC):
     def search_by_nameProduct(self, nameProduct:str) -> list[Product]:
         pass
 
+
+
