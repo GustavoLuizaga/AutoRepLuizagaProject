@@ -1,7 +1,7 @@
 from . import Brand
 
 class Product:
-    def __init__(self, name: str, price: float, stock: int, description: str, reorder: int, code: str, image_url: str, brand: Brand,id: int = None):
+    def __init__(self, name: str, price: float, stock: int, description: str, reorder: int, code: str, image_url: str, brand: Brand,id:int = None ):
         self.__name = name
         self.__price = price
         self.__stock = stock

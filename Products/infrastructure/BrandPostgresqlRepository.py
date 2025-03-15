@@ -1,7 +1,6 @@
 from Products.domain.Brand import Brand
 from Products.domain.BrandRepository import BrandRepository
 from Products.infrastructure.models import BrandModel
-from django.core.exceptions import ObjectDoesNotExist
 
 class BrandPostgresqlRepository(BrandRepository):
 
@@ -49,3 +48,9 @@ class BrandPostgresqlRepository(BrandRepository):
             return None
         return Brand(brand_model.name, brand_model.countryOrigin, brand_model.id)
 
+    def find_brand_by_id(self, brand_id) -> Brand:
+        try:
+            brand_model = BrandModel.objects.get(id=brand_id)
+            return Brand(brand_model.name, brand_model.countryOrigin, brand_model.id)
+        except BrandModel.DoesNotExist:
+            return None

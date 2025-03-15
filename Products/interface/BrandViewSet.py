@@ -1,6 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from Products.application.commands.BrandCreator import BrandCreator
+from Products.application.commands.BrandFindById import BrandFindById
 from Products.application.commands.BrandFindByName import BrandFindByName
 from Products.application.commands.BrandRemover import BrandRemover
 from Products.application.commands.BrandGetAll import BrandGetAll
@@ -19,6 +20,7 @@ class BrandViewSet(viewsets.ViewSet):
         self.brand_get_all = BrandGetAll(self.repository)
         self.brand_partial_update = BrandPartialUpdate(self.repository)
         self.brand_find_by_name = BrandFindByName(self.repository)
+        self.brand_find_by_id = BrandFindById(self.repository)
 
 
     def list(self, request):
@@ -49,13 +51,21 @@ class BrandViewSet(viewsets.ViewSet):
         except ErrorData :
             return Response({"error": "The 'name' attribute cannot be empty"}, status=status.HTTP_400_BAD_REQUEST)
 
+    def retrieve(self, request, pk=None):
+        brand = self.brand_find_by_id.find_brand_by_id(pk)
+        if brand is None:
+            return Response({"error": "Brand not found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response(BrandSerializer(brand).data, status=status.HTTP_200_OK)
+
     @action(detail=False, methods=['get'], url_path='findByName')
     def find_by_name(self, request):
         name = request.query_params.get('name', None)
-        print(name)
         if not name:
             return Response({"error": "Name parameter is required"}, status=status.HTTP_400_BAD_REQUEST)
         brand = self.brand_find_by_name.find_brand_by_name(name)
         if brand is None:
             return Response({"error": "Brand not found"}, status=status.HTTP_404_NOT_FOUND)
         return Response(BrandSerializer(brand).data, status=status.HTTP_200_OK)
+
+
+

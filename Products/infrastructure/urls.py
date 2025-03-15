@@ -17,10 +17,13 @@ urlpatterns = [
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from Products.interface.BrandViewSet import BrandViewSet
+from Products.interface.ProductViewSet import ProductViewSet
 
 router = DefaultRouter()
 router.register(r'brand', BrandViewSet, basename='brand')
+router.register(r'product', ProductViewSet, basename='product')
 
 urlpatterns = [
     path('', include(router.urls)),
+
 ]

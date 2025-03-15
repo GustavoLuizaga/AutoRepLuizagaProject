@@ -25,3 +25,7 @@ class BrandRepository(ABC):
     @abstractmethod
     def find_brand_by_name(self, brand_name: str)-> Brand:
         pass
+
+    @abstractmethod
+    def find_brand_by_id(self, id_brand: int) -> Brand:
+        pass
