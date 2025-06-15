@@ -15,3 +15,7 @@ class ProductRepository(ABC):
     @abstractmethod
     def get_all_products(self)->list[Product]:
         pass
+
+    @abstractmethod
+    def partial_update(self, product_id:int, data_update) -> Product:
+        pass

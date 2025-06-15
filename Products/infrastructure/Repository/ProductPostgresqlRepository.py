@@ -34,3 +34,39 @@ class ProductPostgresqlRepository(ProductRepository):
         if not products.exists():
             return []
         return [ProductMapper.to_domain(product_model) for product_model in products]
+
+    def partial_update(self, product_id: int, data_update) -> Product:
+        try:
+            product_model = ProductModel.objects.get(id=product_id)
+
+            if "name" in data_update:
+                product_model.name = data_update["name"]
+
+            if "price" in data_update:
+                product_model.price = data_update["price"]
+
+            if "stock" in data_update:
+                product_model.stock = data_update["stock"]
+
+            if "description" in data_update:
+                product_model.description = data_update["description"]
+
+            if "reorder" in data_update:
+                product_model.reorder = data_update["reorder"]
+
+            if "code" in data_update:
+                product_model.code = data_update["code"]
+
+            if "image" in data_update:
+                product_model.image = data_update["image"]
+
+            if "brand" in data_update:
+                product_model.brand = data_update["brand"]
+
+            product_model.save()
+            return ProductMapper.to_domain(product_model)
+
+        except ProductModel.DoesNotExist:
+            return None
+
+

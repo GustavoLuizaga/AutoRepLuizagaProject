@@ -5,3 +5,11 @@ This exception should be thrown when the data received or manipulated does not c
 
 class ErrorData(Exception):
     pass
+
+class NotFoundError(ErrorData):
+    pass
+    """Error para indicar que un recurso no fue encontrado."""
+
+class InvalidDataError(ErrorData):
+    pass
+    """Error para indicar que los datos son inválidos."""

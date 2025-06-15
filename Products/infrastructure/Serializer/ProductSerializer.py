@@ -1,7 +1,6 @@
 from rest_framework import serializers
-from Products.domain.Brand import Brand
 from Products.domain.Product import Product
-from Products.infrastructure.BrandSerializer import BrandSerializer
+from Products.infrastructure.Serializer.BrandSerializer import BrandSerializer
 
 class ProductSerializer(serializers.Serializer):
     id = serializers.IntegerField(required=False)

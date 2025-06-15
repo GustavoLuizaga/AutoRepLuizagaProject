@@ -1,13 +1,13 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from Products.application.commands.BrandCreator import BrandCreator
-from Products.application.commands.BrandFindById import BrandFindById
-from Products.application.commands.BrandFindByName import BrandFindByName
-from Products.application.commands.BrandRemover import BrandRemover
-from Products.application.commands.BrandGetAll import BrandGetAll
-from Products.application.commands.BrandPartialUpdate import BrandPartialUpdate
-from Products.infrastructure.BrandPostgresqlRepository import BrandPostgresqlRepository
-from Products.infrastructure.BrandSerializer import BrandSerializer
+from Products.application.commands.Brands.BrandCreator import BrandCreator
+from Products.application.commands.Brands.BrandFindById import BrandFindById
+from Products.application.commands.Brands.BrandFindByName import BrandFindByName
+from Products.application.commands.Brands.BrandRemover import BrandRemover
+from Products.application.commands.Brands.BrandGetAll import BrandGetAll
+from Products.application.commands.Brands.BrandPartialUpdate import BrandPartialUpdate
+from Products.infrastructure.Repository.BrandPostgresqlRepository import BrandPostgresqlRepository
+from Products.infrastructure.Serializer.BrandSerializer import BrandSerializer
 from rest_framework.decorators import action
 from Products.domain.ErrorData import ErrorData
 
