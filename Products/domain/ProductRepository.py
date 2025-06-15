@@ -7,3 +7,11 @@ class ProductRepository(ABC):
     @abstractmethod
     def save_product(self, product:Product):
         pass
+
+    @abstractmethod
+    def delete_product(self, product_id:int)->bool:
+        pass
+
+    @abstractmethod
+    def get_all_products(self)->list[Product]:
+        pass

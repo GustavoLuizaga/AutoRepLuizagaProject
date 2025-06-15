@@ -7,7 +7,7 @@ class BrandRepository(ABC):
         pass
 
     @abstractmethod
-    def delete_brand(self, brand_id: int ):
+    def delete_brand(self, brand_id: int )->bool:
         pass
 
     @abstractmethod

@@ -1,7 +1,6 @@
 from Products.domain.Brand import Brand
 from Products.domain.BrandRepository import BrandRepository
 
-
 class BrandGetAll:
     def __init__(self, brandRepository: BrandRepository):
         self.brandRepository = brandRepository
