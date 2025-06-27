@@ -1,6 +1,6 @@
 .venv
 .idea
-Products/migrations
+products/migrations
 __pycache__/
 *.pyc
 *.pyo
