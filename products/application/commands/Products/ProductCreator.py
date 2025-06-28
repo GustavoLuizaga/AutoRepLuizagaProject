@@ -9,7 +9,7 @@ class ProductCreator:
         self.product_repository = product_repository
         self.brand_repository = brand_repository
 
-    def create_product(self,name:str, price:float, stock:int, description:str, reorder:int, code:str,image_url:str,brand_id:int)->Product:
+    def create_product(self,name:str, price:float, stock:int, description:str, reorder:int, code:str,image_url:list[str],brand_id:int)->Product:
         brand_domain = self.brand_repository.find_brand_by_id(brand_id)
         if brand_domain is None:
             raise ErrorData()

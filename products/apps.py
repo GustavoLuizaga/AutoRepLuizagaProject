@@ -7,4 +7,4 @@ class ProductsConfig(AppConfig):
 
     def ready(self):
          #import all models
-        from products.infrastructure.models import ProductModel,BrandModel
+        from products.infrastructure.models import ProductModel,BrandModel,ImageProductModel

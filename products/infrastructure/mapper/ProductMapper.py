@@ -6,6 +6,7 @@ class ProductMapper:
     #No es necesario instanciar esta clase por eso se usa la notacion
     @staticmethod
     def to_domain(product_model:ProductModel)->Product:
+        image_urls = [img.image_url for img in product_model.images_product.all()]
         return Product(
             id=product_model.id,
             code=product_model.code,
@@ -13,7 +14,7 @@ class ProductMapper:
             price=product_model.price,
             stock=product_model.stock,
             description=product_model.description,
-            image_url=product_model.image,
+            image_url=image_urls,
             reorder=product_model.reorder,
             brand=BrandMapper.to_domain(product_model.brand)
         )

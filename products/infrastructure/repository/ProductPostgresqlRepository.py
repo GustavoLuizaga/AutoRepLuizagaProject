@@ -1,5 +1,6 @@
 from products.domain.Product import Product
 from products.domain.ProductRepository import ProductRepository
+from products.infrastructure.models import ImageProductModel
 from products.infrastructure.models.BrandModel import BrandModel
 from products.infrastructure.models.ProductModel import ProductModel
 from products.infrastructure.mapper.ProductMapper import ProductMapper
@@ -7,21 +8,34 @@ from products.infrastructure.mapper.ProductMapper import ProductMapper
 
 class ProductPostgresqlRepository(ProductRepository):
 
-    def save_product(self, product:Product)->Product:
-        brand = product.get_brand()
-        brand_model = BrandModel.objects.get(id=brand.get_id())
-        product_model = ProductModel(
-            stock=product.get_stock(),
+    def save_product(self, product: Product) -> Product:
+        brand_model = BrandModel.objects.get(id=product.get_brand().get_id())
+        product_model = ProductModel.objects.create(
             code=product.get_code(),
             name=product.get_name(),
             price=product.get_price(),
+            stock=product.get_stock(),
             description=product.get_description(),
-            image=product.get_image_url(),
             reorder=product.get_reorder(),
-            brand=brand_model)
-        product_model.save()
-        return Product(product_model.name, product_model.price, product_model.stock, product_model.description, product_model.reorder,product_model.code, product_model.image,product_model.brand,product_model.id)
+            brand=brand_model
+        )
+        ImageProductModel.objects.bulk_create([
+            ImageProductModel(product=product_model, image_url=url)
+            for url in product.get_image_url()
+        ])
 
+        image_urls = [img.image_url for img in product_model.images_product.all()]
+        return Product(
+            id=product_model.id,
+            code=product_model.code,
+            name=product_model.name,
+            price=product_model.price,
+            stock=product_model.stock,
+            description=product_model.description,
+            reorder=product_model.reorder,
+            image_url=image_urls,
+            brand=product.get_brand()
+        )
     def delete_product(self, product_id:int)->bool:
         try:
             product_model = ProductModel.objects.get(id=product_id)
