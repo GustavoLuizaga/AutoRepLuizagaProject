@@ -1,6 +1,9 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
+
+from products.application.commands.Products.AddProductImage import AddProductImage
 from products.application.commands.Products.ProductCreator import ProductCreator
+from products.application.commands.Products.ProductImageUpdate import ProductImageUpdate
 from products.application.commands.Products.ProductPartialUpdate import ProductPartialUpdate
 from products.domain.ErrorData import ErrorData, NotFoundError, InvalidDataError
 from products.infrastructure.repository.ProductPostgresqlRepository import ProductPostgresqlRepository
@@ -8,6 +11,7 @@ from products.infrastructure.serializer.ProductSerializer import ProductSerializ
 from products.infrastructure.repository.BrandPostgresqlRepository import BrandPostgresqlRepository
 from products.application.commands.Products.ProductRemover import ProductRemover
 from products.application.commands.Products.ProductGetAll import ProductGetAll
+from rest_framework.decorators import action
 
 
 class ProductViewSet(viewsets.ViewSet):
@@ -19,6 +23,8 @@ class ProductViewSet(viewsets.ViewSet):
         self.product_creator = ProductCreator(self.product_repository,self.brand_repository)
         self.product_partial_update = ProductPartialUpdate(self.product_repository)
         self.product_get_all= ProductGetAll(self.product_repository)
+        self.add_product_image = AddProductImage(self.product_repository)
+        self.product_image_update = ProductImageUpdate(self.product_repository)
 
 
     def create(self, request):
@@ -34,11 +40,11 @@ class ProductViewSet(viewsets.ViewSet):
                 request.data.get('brand_id'))
             return Response(ProductSerializer(product).data, status=status.HTTP_201_CREATED)
         except ErrorData:
-            return Response({"error": "Product not Found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "Brand not Found"}, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self,request, pk=None):
-        success = self.product_remover.delete_product(pk)
-        if success:
+        success_destroy = self.product_remover.delete_product(pk)
+        if success_destroy:
             return Response({"message": "Product deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
         return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -55,3 +61,15 @@ class ProductViewSet(viewsets.ViewSet):
                 return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
         except InvalidDataError as e:
                 return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['patch'], url_path=r'(?P<product_id>\d+)/(?P<image_id>\d+)/update-image')
+    def update_image(self, request, product_id=None, image_id=None):
+        success_update = self.product_image_update.update_image_product(product_id, image_id, request.data.get('image_url'))
+        return Response({"detail":success_update}, status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=True, methods=['post'], url_path='add-image')
+    def add_image(self, request, pk=None):
+        success_add = self.add_product_image.add_product_image(pk, request.data.get('image_url'))
+        if success_add:
+            return Response({"message": "Image added successfully"}, status=status.HTTP_201_CREATED)
+        return Response({"error": "Image not added"}, status=status.HTTP_400_BAD_REQUEST)

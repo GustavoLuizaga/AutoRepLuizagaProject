@@ -19,3 +19,11 @@ class ProductRepository(ABC):
     @abstractmethod
     def partial_update(self, product_id:int, data_update) -> Product:
         pass
+
+    @abstractmethod
+    def update_image_product(self, product_id:int,image_id:int, data_update) -> str:
+        pass
+
+    @abstractmethod
+    def add_product_image(self, product_id:int, image_url:str) -> bool:
+        pass

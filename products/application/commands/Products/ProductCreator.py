@@ -1,5 +1,6 @@
 from products.domain.ErrorData import ErrorData
 from products.domain.Product import Product
+from products.domain.ProductImage import ProductImage
 from products.domain.ProductRepository import ProductRepository
 from products.domain.BrandRepository import BrandRepository
 
@@ -13,6 +14,7 @@ class ProductCreator:
         brand_domain = self.brand_repository.find_brand_by_id(brand_id)
         if brand_domain is None:
             raise ErrorData()
-        product = Product(name, price, stock, description, reorder, code, image_url, brand_domain)
+        images = [ProductImage(url_image=url) for url in image_url] if image_url else []
+        product = Product(name, price, stock, description, reorder, code, images, brand_domain)
         return self.product_repository.save_product(product)
 

@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from products.domain.Product import Product
 from products.infrastructure.serializer.BrandSerializer import BrandSerializer
+from products.infrastructure.serializer.ProductImageSerializer import ProductImageSerializer
 
 class ProductSerializer(serializers.Serializer):
     id = serializers.IntegerField(required=False)
@@ -10,7 +11,7 @@ class ProductSerializer(serializers.Serializer):
     description = serializers.CharField()
     reorder = serializers.IntegerField()
     code = serializers.CharField(max_length=100)
-    image_url = serializers.CharField()
+    image_url = ProductImageSerializer(many=True)
     brand = BrandSerializer()
 
     def to_representation(self, instance):
@@ -23,7 +24,7 @@ class ProductSerializer(serializers.Serializer):
                 "description": instance.get_description(),
                 "reorder": instance.get_reorder(),
                 "code": instance.get_code(),
-                "image_url": instance.get_image_url(),
+                "image_url": ProductImageSerializer(instance.get_image_url(), many=True).data,
                 "brand": BrandSerializer(instance.get_brand()).data
             }
         return super().to_representation(instance)

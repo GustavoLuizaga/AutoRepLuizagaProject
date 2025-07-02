@@ -1,9 +1,11 @@
 from products.domain.Product import Product
+from products.domain.ProductImage import ProductImage
 from products.domain.ProductRepository import ProductRepository
 from products.infrastructure.models import ImageProductModel
 from products.infrastructure.models.BrandModel import BrandModel
 from products.infrastructure.models.ProductModel import ProductModel
 from products.infrastructure.mapper.ProductMapper import ProductMapper
+
 
 
 class ProductPostgresqlRepository(ProductRepository):
@@ -19,12 +21,16 @@ class ProductPostgresqlRepository(ProductRepository):
             reorder=product.get_reorder(),
             brand=brand_model
         )
-        ImageProductModel.objects.bulk_create([
-            ImageProductModel(product=product_model, image_url=url)
-            for url in product.get_image_url()
-        ])
 
-        image_urls = [img.image_url for img in product_model.images_product.all()]
+        images = product.get_image_url()
+
+        if images:  # Solo si hay objetos en la lista
+            ImageProductModel.objects.bulk_create([
+                ImageProductModel(product=product_model, image_url=image.get_url_image())
+                for image in images
+            ])
+
+        image_urls = [ProductImage(url_image=img.image_url) for img in product_model.images_product.all()]
         return Product(
             id=product_model.id,
             code=product_model.code,
@@ -72,9 +78,6 @@ class ProductPostgresqlRepository(ProductRepository):
             if "code" in data_update:
                 product_model.code = data_update["code"]
 
-            if "image" in data_update:
-                product_model.image = data_update["image"]
-
             if "brand" in data_update:
                 product_model.brand = data_update["brand"]
 
@@ -84,4 +87,18 @@ class ProductPostgresqlRepository(ProductRepository):
         except ProductModel.DoesNotExist:
             return None
 
+    def update_image_product(self, product_id: int, image_id: int, data_update) -> str:
+        try:
+            image_product = ImageProductModel.objects.get(id=image_id, product_id=product_id)
+            image_product.image_url = data_update
+            image_product.save()
+            return "Imagen actualizada correctamente"
+        except ImageProductModel.DoesNotExist:
+            return "Imagen no encontrada para ese producto"
 
+    def add_product_image(self, product_id:int, image_url:str) -> bool:
+        try:
+            image_product = ImageProductModel.objects.create(product_id=product_id, image_url=image_url)
+            return True
+        except ImageProductModel.DoesNotExist:
+            return False

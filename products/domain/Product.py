@@ -1,7 +1,9 @@
 from . import Brand
+from .ProductImage import ProductImage
+
 
 class Product:
-    def __init__(self, name: str, price: float, stock: int, description: str, reorder: int, code: str, image_url: list[str], brand: Brand,id:int = None ):
+    def __init__(self, name: str, price: float, stock: int, description: str, reorder: int, code: str, image_url: list[ProductImage], brand: Brand,id:int = None ):
         self.__name = name
         self.__price = price
         self.__stock = stock
@@ -33,7 +35,7 @@ class Product:
     def get_code(self) -> str:
         return self.__code
 
-    def get_image_url(self) -> list[str]:
+    def get_image_url(self) -> list[ProductImage]:
         return self.__image_url
 
     def get_brand(self) -> Brand:
@@ -57,7 +59,7 @@ class Product:
     def set_code(self, code: str):
         self.__code = code
 
-    def set_image_url(self, image_url: list[str]):
+    def set_image_url(self, image_url: list[ProductImage]):
         self.__image_url = image_url
 
     def set_brand(self, brand: Brand):
