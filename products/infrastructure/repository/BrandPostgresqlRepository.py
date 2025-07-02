@@ -1,5 +1,8 @@
 from products.domain.Brand import Brand
 from products.domain.BrandRepository import BrandRepository
+from django.db.models import ProtectedError
+
+from products.domain.value_objects.DeleteBrandResult import DeleteBrandResult
 from products.infrastructure.models.BrandModel import BrandModel
 
 class BrandPostgresqlRepository(BrandRepository):
@@ -9,13 +12,15 @@ class BrandPostgresqlRepository(BrandRepository):
         brandModel.save()
         return Brand(brandModel.name, brandModel.countryOrigin,brandModel.id)
 
-    def delete_brand(self, brand_id: int ) ->bool:
+    def delete_brand(self, brand_id: int ) ->DeleteBrandResult:
         try:
-            brandModel = BrandModel.objects.get(id=brand_id)
-            brandModel.delete()
-            return True
+            brand = BrandModel.objects.get(id=brand_id)
+            brand.delete()
+            return DeleteBrandResult.DELETED
         except BrandModel.DoesNotExist:
-            return False
+            return DeleteBrandResult.NOT_FOUND
+        except ProtectedError:
+            return DeleteBrandResult.HAS_PRODUCTS
 
     def update_brand(self, brand: Brand):
         pass

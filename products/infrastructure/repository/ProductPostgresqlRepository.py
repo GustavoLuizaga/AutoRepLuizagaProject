@@ -102,3 +102,11 @@ class ProductPostgresqlRepository(ProductRepository):
             return True
         except ImageProductModel.DoesNotExist:
             return False
+
+    def delete_image_product(self, image_id:int) ->bool:
+        try:
+            image_product = ImageProductModel.objects.get(id=image_id)
+            image_product.delete()
+            return True
+        except ImageProductModel.DoesNotExist:
+            return False

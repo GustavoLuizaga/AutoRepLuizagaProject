@@ -2,6 +2,7 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 
 from products.application.commands.Products.AddProductImage import AddProductImage
+from products.application.commands.Products.DeleteImage import DeleteProductImage
 from products.application.commands.Products.ProductCreator import ProductCreator
 from products.application.commands.Products.ProductImageUpdate import ProductImageUpdate
 from products.application.commands.Products.ProductPartialUpdate import ProductPartialUpdate
@@ -24,6 +25,7 @@ class ProductViewSet(viewsets.ViewSet):
         self.product_partial_update = ProductPartialUpdate(self.product_repository)
         self.product_get_all= ProductGetAll(self.product_repository)
         self.add_product_image = AddProductImage(self.product_repository)
+        self.delete_product_image = DeleteProductImage(self.product_repository)
         self.product_image_update = ProductImageUpdate(self.product_repository)
 
 
@@ -73,3 +75,10 @@ class ProductViewSet(viewsets.ViewSet):
         if success_add:
             return Response({"message": "Image added successfully"}, status=status.HTTP_201_CREATED)
         return Response({"error": "Image not added"}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['delete'], url_path='delete-image')
+    def delete_image(self,request, pk=None):
+        success_delete_image = self.delete_product_image.delete_image_product(pk)
+        if success_delete_image:
+            return Response({"message": "Image deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+        return Response({"error": "Image not found"}, status=status.HTTP_404_NOT_FOUND)

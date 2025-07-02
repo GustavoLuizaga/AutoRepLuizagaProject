@@ -8,6 +8,7 @@ from products.application.commands.Brands.BrandGetAll import BrandGetAll
 from products.application.commands.Brands.BrandPartialUpdate import BrandPartialUpdate
 from products.infrastructure.repository.BrandPostgresqlRepository import BrandPostgresqlRepository
 from products.infrastructure.serializer.BrandSerializer import BrandSerializer
+from products.domain.value_objects.DeleteBrandResult import DeleteBrandResult
 from rest_framework.decorators import action
 from products.domain.ErrorData import ErrorData
 
@@ -36,10 +37,17 @@ class BrandViewSet(viewsets.ViewSet):
         return Response(BrandSerializer(brand).data, status=status.HTTP_201_CREATED)
 
     def destroy(self, request, pk=None):
-        success = self.brand_remover.delete_brand(pk)
-        if success:
+        result = self.brand_remover.delete_brand(pk)
+
+        if result == DeleteBrandResult.DELETED:
             return Response({"message": "Brand deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
-        return Response({"error": "Brand not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        elif result == DeleteBrandResult.NOT_FOUND:
+            return Response({"error": "Brand not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        elif result == DeleteBrandResult.HAS_PRODUCTS:
+            return Response({"error": "Cannot delete brand with associated products"},
+                            status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
         data = request.data

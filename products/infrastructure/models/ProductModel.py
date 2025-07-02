@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import PROTECT
 from products.infrastructure.models.BrandModel import BrandModel
 
 class ProductModel(models.Model):
@@ -8,4 +9,4 @@ class ProductModel(models.Model):
     price = models.FloatField()
     description = models.TextField()
     reorder= models.IntegerField(default=0)
-    brand = models.ForeignKey(BrandModel, on_delete=models.CASCADE)
+    brand = models.ForeignKey(BrandModel, on_delete=PROTECT)

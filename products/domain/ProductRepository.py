@@ -27,3 +27,6 @@ class ProductRepository(ABC):
     @abstractmethod
     def add_product_image(self, product_id:int, image_url:str) -> bool:
         pass
+
+    def delete_image_product(self, image_id:int)->bool:
+        pass

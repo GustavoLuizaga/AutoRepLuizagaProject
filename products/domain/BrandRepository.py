@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 from . import Brand
+from .value_objects.DeleteBrandResult import DeleteBrandResult
+
 
 class BrandRepository(ABC):
     @abstractmethod
@@ -7,7 +9,7 @@ class BrandRepository(ABC):
         pass
 
     @abstractmethod
-    def delete_brand(self, brand_id: int )->bool:
+    def delete_brand(self, brand_id: int )->DeleteBrandResult:
         pass
 
     @abstractmethod
