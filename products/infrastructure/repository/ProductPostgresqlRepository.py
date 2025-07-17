@@ -30,7 +30,7 @@ class ProductPostgresqlRepository(ProductRepository):
                 for image in images
             ])
 
-        image_urls = [ProductImage(url_image=img.image_url) for img in product_model.images_product.all()]
+        image_urls = [ProductImage(url_image=img.image_url, id_image=img.id) for img in product_model.images_product.all()]
         return Product(
             id=product_model.id,
             code=product_model.code,
